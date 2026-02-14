@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Валентинка Никусе</title>
+  <style>
+    :root{
+      --bg1:#ffe4ee;
+      --bg2:#ffd1e2;
+      --card:#fff7fb;
+      --text:#5a2142;
+      --accent:#ff4d88;
+      --accent2:#ff78a6;
+      --shadow: 0 18px 40px rgba(90, 33, 66, .18);
+    }
+
+    *{ box-sizing:border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 700px at 20% 0%, #fff 0%, var(--bg1) 35%, var(--bg2) 100%);
+      overflow-x:hidden;
+    }
+
+    /* Орнаменты по бокам */
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      top:0; bottom:0;
+      width:72px;
+      opacity:.55;
+      pointer-events:none;
+      background-repeat: repeat-y;
+      background-size: 44px 44px;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.08));
+      /* маленькие сердечки как SVG-паттерн */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Crect width='44' height='44' fill='none'/%3E%3Cpath d='M22 33s-9-6.1-12.2-10.6C6.6 18.3 8.2 13 13.1 12c2.6-.6 4.8.7 6.1 2.3 1.3-1.6 3.5-2.9 6.1-2.3 4.9 1 6.5 6.3 3.3 10.4C31 26.9 22 33 22 33z' fill='%23ff4d88'/%3E%3Ccircle cx='22' cy='7' r='2.2' fill='%23ff78a6' opacity='.9'/%3E%3C/svg%3E");
+    }
+    body::before{ left: 10px; }
+    body::after{ right: 10px; transform: scaleX(-1); }
+
+    @media (max-width: 520px){
+      body::before, body::after{ width: 48px; opacity: .35; }
+    }
+
+    .wrap{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Верх: гифка ~3/5 */
+    .hero{
+      height: 60vh;
+      min-height: 320px;
+      position:relative;
+      padding: 22px 22px 0;
+      display:flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .gif-frame{
+      width: min(720px, 92vw);
+      height: 60vh;
+      min-height: 260px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      background: linear-gradient(135deg, #ffd0e1, #ffe9f2);
+      border: 1px solid rgba(255,77,136,.25);
+    }
+
+    .gif-frame img{
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    /* Низ: вопрос и кнопки */
+    .content{
+      flex:1;
+      padding: 16px 22px 54px;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+    }
+
+    .card { overflow: visible; }Ы
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-60px -60px auto -60px;
+      height: 160px;
+      background: radial-gradient(circle at 20% 30%, rgba(255,77,136,.28), transparent 55%),
+      radial-gradient(circle at 70% 50%, rgba(255,120,166,.30), transparent 58%),
+      radial-gradient(circle at 40% 90%, rgba(255,77,136,.18), transparent 60%);
+      transform: rotate(-6deg);
+      pointer-events:none;
+    }
+
+    h1{
+      margin: 8px 0 10px;
+      font-size: clamp(24px, 3.4vw, 36px);
+      letter-spacing: .2px;
+    }
+
+    .sub{
+      margin: 0 0 18px;
+      opacity:.85;
+      font-size: 15px;
+    }
+
+    .btns { position: relative; overflow: visible; min-height: 90px; }
+    button{
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(90,33,66,.12);
+      transition: transform .18s ease, filter .18s ease, background .18s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #yesBtn{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      transform: scale(1);
+    }
+    #yesBtn:hover{ filter: brightness(1.03); }
+
+    #noBtn{
+      background: #ffe0ec;
+      color: #6a2a4c;
+      border: 1px solid rgba(255,77,136,.25);
+    }
+    #noBtn:hover{ filter: brightness(0.98); }
+
+    .hint{
+      margin-top: 14px;
+      font-size: 13px;
+      opacity:.75;
+    }
+
+    /* Модалка при "Да" */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.35);
+      padding: 18px;
+    }
+    .fullscreen-yes{
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      font-size: clamp(26px, 5vw, 60px);
+      z-index: 9999;
+      transform: none !important;
+    }
+    .modal.show{ display:flex; }
+
+    .modal-card{
+      width: min(520px, 100%);
+      background: white;
+      border-radius: 22px;
+      padding: 22px;
+      text-align:center;
+      box-shadow: 0 24px 60px rgba(0,0,0,.25);
+      border: 1px solid rgba(255,77,136,.22);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .modal-card .big{
+      font-size: 28px;
+      margin: 6px 0 8px;
+    }
+
+    .close{
+      margin-top: 14px;
+      background: #ffe0ec;
+      border: 1px solid rgba(255,77,136,.25);
+      color: #6a2a4c;
+    }
+
+    /* Простая анимация “плавающих сердечек” внутри модалки */
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      background:
+              radial-gradient(circle at 15% 20%, rgba(255,77,136,.55), transparent 35%),
+              radial-gradient(circle at 75% 35%, rgba(255,120,166,.55), transparent 36%),
+              radial-gradient(circle at 40% 80%, rgba(255,77,136,.45), transparent 38%);
+      animation: floaty 2.8s ease-in-out infinite alternate;
+    }
+    @keyframes floaty{
+      from{ transform: translateY(0); }
+      to{ transform: translateY(-10px); }
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="gif-frame" aria-label="Валентинка-гифка сверху">
+      <!-- Замени src на свою гифку -->
+      <img src="./Любимой_files/valentine.gif" alt="Романтичная гифка">
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="card">
+      <h1>Будешь моей валентинкой?</h1>
+      <p class="sub">Обещаю согревать тебя теплом сердца и баловать сладкими сюрпризами.</p>
+
+      <div class="btns" style="position: relative; overflow: visible;">
+        <button id="yesBtn" style="position: absolute; left: 50%; top: 0px; transform-origin: center center; transform: translateX(-50%) scale(1);">Да</button>
+        <button id="noBtn" style="position: absolute; left: 289.331px; top: -0.799999px;">Нет</button>
+      </div>
+
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Поздравление">
+  <div class="modal-card">
+    <div class="hearts" aria-hidden="true"></div>
+    <div class="big">Урааа! 💖</div>
+    <div>С 14 февраля! Ты теперь моя валентинка.</div>
+    <button class="close" id="closeBtn">Закрыть</button>
+  </div>
+</div>
+
+<script>
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn  = document.getElementById('noBtn');
+  const modal  = document.getElementById('modal');
+  const closeBtn = document.getElementById('closeBtn');
+  const btns = document.querySelector('.btns');
+
+  const noPhrases = [
+    "Нет",
+    "Ну пожалуйста...",
+    "Ну солнышко🥺",
+    "Ну очень прошу",
+    "Я принесу сладости",
+    "Ну давай 🙏",
+    "Пожалуйстааа",
+    "Ладно… может «Да»?"
+  ];
+
+  let noClicks = 0;
+  let yesScale = 1;
+
+  function applyYesTransform() {
+    // Центрируем "Да" по середине контейнера кнопок и увеличиваем
+    yesBtn.style.left = '50%';
+    yesBtn.style.top = '0';
+    yesBtn.style.transformOrigin = 'center';
+    yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
+  }
+
+  function placeNoToRightOfYes() {
+    const gap = 14;
+
+    const areaRect = btns.getBoundingClientRect();
+    const yesRect  = yesBtn.getBoundingClientRect();
+
+    // "Нет" ставим справа от "Да", по вертикали центрируем относительно "Да"
+    const x = (yesRect.right - areaRect.left) + gap;
+    const y = (yesRect.top + yesRect.height / 2 - noBtn.offsetHeight / 2) - areaRect.top;
+
+    noBtn.style.left = `${x}px`;
+    noBtn.style.top  = `${y}px`;
+  }
+
+  function syncButtons() {
+    // Позиционирование в контейнере
+    btns.style.position = 'relative';
+    btns.style.overflow = 'visible';
+
+    yesBtn.style.position = 'absolute';
+    noBtn.style.position  = 'absolute';
+
+    applyYesTransform();
+
+    // После применения transform измеряем и ставим "Нет"
+    requestAnimationFrame(placeNoToRightOfYes);
+  }
+
+  // Инициализация
+  syncButtons();
+  window.addEventListener('resize', syncButtons);
+
+  noBtn.addEventListener('click', () => {
+    noClicks++;
+    noBtn.textContent = noPhrases[noClicks % noPhrases.length];
+
+    yesScale *= 1.15; // настрой: 1.10 медленнее, 1.25 быстрее
+    syncButtons();
+  });
+
+  yesBtn.addEventListener('click', () => {
+    modal.classList.add('show');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('show');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.remove('show');
+  });
+</script>
+
+
+
+</body></html>
